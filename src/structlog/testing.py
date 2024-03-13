@@ -14,7 +14,7 @@ See :doc:`testing`.
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import Any, Generator, NamedTuple, NoReturn
+from typing import Any, Generator, NamedTuple, NoReturn, Union
 
 from ._config import configure, get_config
 from .exceptions import DropEvent
@@ -179,8 +179,11 @@ class CapturingLogger:
         Capture call to `calls`
         """
 
-        def log(*args: Any, **kw: Any) -> None:
+        def log(*args: Any, **kw: Any) -> Union["CapturingLogger", None]:
             self.calls.append(CapturedCall(name, args, kw))
+            if name == "bind":
+                # bind expects to return a new logger
+                return self
 
         return log
 

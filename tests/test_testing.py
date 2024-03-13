@@ -159,11 +159,13 @@ class TestCapturingLogger:
         """
         cl = CapturingLogger()
 
-        cl.info("hi", val=42)
-        cl.trololo("yolo", foo={"bar": "baz"})
+        assert cl.info("hi", val=42) is None
+        new_cl = cl.bind(bound=True)
+        assert new_cl.trololo("yolo", foo={"bar": "baz"}) is None
 
         assert [
             CapturedCall(method_name="info", args=("hi",), kwargs={"val": 42}),
+            CapturedCall(method_name="bind", args=(), kwargs={"bound": True}),
             CapturedCall(
                 method_name="trololo",
                 args=("yolo",),
